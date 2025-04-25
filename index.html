@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DentaCloud API Docs</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script>
+    window.onload = () => {
+      const spec = {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "DentaCloud API",
+          "description": "REST API for managing dental files and smart-access permissions",
+          "version": "1.0.0"
+        },
+        "servers": [{"url": "https://api.dentacloud.app/v1"}],
+        "paths": {
+          "/upload": {
+            "post": {
+              "summary": "Upload a new dental scan",
+              "tags": ["Files"],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "multipart/form-data": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "file": {"type": "string", "format": "binary"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {"200": {"description": "File uploaded successfully"}}
+            }
+          },
+          "/files/{file_id}": {
+            "get": {
+              "summary": "Retrieve a specific file",
+              "tags": ["Files"],
+              "parameters": [{
+                "in": "path",
+                "name": "file_id",
+                "schema": {"type": "string"},
+                "required": true
+              }],
+              "responses": {
+                "200": {"description": "Returns the file"},
+                "403": {"description": "Unauthorized access"}
+              }
+            }
+          }
+        },
+        "components": {
+          "securitySchemes": {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        },
+        "security": [{"bearerAuth": []}]
+      };
+      SwaggerUIBundle({
+        spec: spec,
+        dom_id: '#swagger-ui',
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+        layout: "BaseLayout"
+      });
+    };
+  </script>
+</body>
+</html>
